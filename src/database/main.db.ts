@@ -6,7 +6,9 @@ import { concatMap, map } from 'rxjs/operators';
 export class DataBase {
   //private readonly URI =
   //"mongodb+srv://MothyLag:100613@cluster0-cw6gu.mongodb.net/rutanet?retryWrites=true&w=majority";
-  private readonly URI = 'mongodb://localhost:27017/soserdb';
+  private readonly URI = process.env.DB_URL
+    ? process.env.DB_URL
+    : 'mongodb://localhost:27017/soserdb';
   public connect() {
     mongoose
       .connect(process.env.MONGODB_URI || this.URI, {
