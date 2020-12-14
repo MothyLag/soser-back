@@ -43,6 +43,8 @@ build/Release
 
 # Dependency directories
 node_modules/
+yarn-error.log
+yarn.lock
 jspm_packages/
 
 # TypeScript v1 declaration files
