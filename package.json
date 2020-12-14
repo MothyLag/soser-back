@@ -1,0 +1,27 @@
+{
+  "name": "soser-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mongoose": "^5.10.2",
+    "apollo-server": "^2.19.0",
+    "class-validator": "^0.12.2",
+    "graphql": "^15.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.7",
+    "nodemon": "^2.0.6",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.6.3",
+    "ts-node": "^9.1.1",
+    "type-graphql": "^1.1.1",
+    "typedi": "^0.8.0",
+    "typescript": "^4.1.2"
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "dev": "nodemon ./src/main.ts --exec ts-node",
+    "start": "node ./build/main.js"
+  }
+}
