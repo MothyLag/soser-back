@@ -2,7 +2,6 @@ import { Service } from 'typedi';
 import { from } from 'rxjs';
 import { userModel } from './models/user.schema';
 import { concatMap, map } from 'rxjs/operators';
-import { createWriteStream } from 'fs';
 import {
   ICreateUserInput,
   ICredentials,
@@ -11,8 +10,8 @@ import {
   SavedFile,
 } from './models/user.interface';
 import { sign } from 'jsonwebtoken';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 @Service()
 export class UserService {
   public helloWorld() {
@@ -86,23 +85,15 @@ export class UserService {
     if (!fs.existsSync(patch)) fs.mkdirSync(patch);
     const extention = path.extname(filename);
     const filePath = path.normalize(`${patch}/picture${extention}`);
-    return new Promise(async (resolve, reject) =>
-      createReadStream()
-        .pipe(
-          createWriteStream(filePath)
-            .on('finish', function () {
-              resolve({
-                filename,
-                filePath,
-              });
-            })
-            .on('error', (e) => {
-              console.log(e);
-              reject(false);
-            })
-        )
-        .end()
-    );
+    return new Promise(async (resolve, reject) => {
+      try {
+        await createReadStream().pipe(fs.createWriteStream(filePath));
+        resolve({ filePath, filename });
+      } catch (e) {
+        console.log(e);
+        reject(false);
+      }
+    });
   }
 
   public async uploadPicture(file: IUploadFile, idUser: string) {
@@ -115,5 +106,9 @@ export class UserService {
         .exec();
       return fileSaved.filePath;
     } else throw new Error('Ocurrió un error mientras se subia el archivo');
+  }
+  public async getUserPicture(idUser: string) {
+    const user = await userModel.findById(idUser).exec();
+    return user.picture ? user.picture : "nopicture";
   }
 }

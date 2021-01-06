@@ -58,6 +58,7 @@ type Mutation {
 
 type Query {
   getUserInfo: User!
+  getUserPicture: String!
   helloWorld: String!
   login(credentials: UserLoginInput!): UserSession!
 }

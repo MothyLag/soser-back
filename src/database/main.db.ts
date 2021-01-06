@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { startSession } from 'mongoose';
 import { of, from } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
@@ -12,6 +12,7 @@ export class DataBase {
       .connect(process.env.MONGODB_URI || this.URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
       })
       .then((connect) => console.log('connected to mongodb..'))
       .catch((e) => console.log('could not connect to mongodb', e));

@@ -46,4 +46,11 @@ export class UserResolver {
     const userId: string = ctx.res.locals.userId;
     return this.userService.uploadPicture(file, userId);
   }
+
+  @Query(() => String)
+  @UseMiddleware(getUserId)
+  public getUserPicture(@Ctx() ctx: any) {
+    const userId: string = ctx.res.locals.userId;
+    return this.userService.getUserPicture(userId);
+  }
 }
