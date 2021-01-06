@@ -30,8 +30,8 @@ const userSchema = new Schema<IUserDocument>(
       required: false,
     },
     picture: {
-      required: false,
       type: String,
+      required: false,
     },
   },
   options

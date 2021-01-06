@@ -86,30 +86,34 @@ export class UserService {
     if (!fs.existsSync(patch)) fs.mkdirSync(patch);
     const extention = path.extname(filename);
     const filePath = path.normalize(`${patch}/picture${extention}`);
-    console.log(filePath);
     return new Promise(async (resolve, reject) =>
-      createReadStream().pipe(
-        createWriteStream(filePath)
-          .on('finish', () => {
-            resolve({
-              filename,
-              filePath,
-            });
-          })
-          .on('error', (e) => {
-            console.log(e);
-            reject(false);
-          })
-      )
+      createReadStream()
+        .pipe(
+          createWriteStream(filePath)
+            .on('finish', function () {
+              resolve({
+                filename,
+                filePath,
+              });
+            })
+            .on('error', (e) => {
+              console.log(e);
+              reject(false);
+            })
+        )
+        .end()
     );
   }
 
   public async uploadPicture(file: IUploadFile, idUser: string) {
     const fileSaved = await this._uploadFile(file, idUser);
-    if (fileSaved !== false)
-      return await userModel
-        .findOneAndUpdate({ _id: idUser }, { picture: fileSaved.filePath })
+    if (fileSaved !== false) {
+      await userModel
+        .findByIdAndUpdate(idUser, {
+          picture: fileSaved.filePath,
+        })
         .exec();
-    else throw new Error('Ocurrió un error mientras se subia el archivo');
+      return fileSaved.filePath;
+    } else throw new Error('Ocurrió un error mientras se subia el archivo');
   }
 }
