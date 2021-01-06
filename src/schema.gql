@@ -3,6 +3,24 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input CreateDataInput {
+  career: String!
+  companyAddress: String!
+  companyDepartment: String!
+  companyName: String!
+  companyPhone: String!
+  companyRFC: String!
+  creditsNumber: Float!
+  creditsPercent: Float!
+  ctrlNumber: String!
+  headDepartment: String!
+  studentAddress: String!
+  studentAge: Float!
+  studentGender: String!
+  studentName: String!
+  studentPhone: String!
+}
+
 input CreateUserInput {
   confirmPassword: String!
   ctrlNumber: String!
@@ -12,13 +30,57 @@ input CreateUserInput {
   password: String!
 }
 
+type Data {
+  _id: ID!
+  career: String!
+  companyAddress: String!
+  companyDepartment: String!
+  companyName: String!
+  companyPhone: String!
+  companyRFC: String!
+  creditsNumber: Float!
+  creditsPercent: Float!
+  ctrlNumber: String!
+  headDepartment: String!
+  student: User!
+  studentAddress: String!
+  studentAge: Float!
+  studentGender: String!
+  studentName: String!
+  studentPhone: String!
+}
+
 type Mutation {
+  createData(newData: CreateDataInput!): Data!
   createUser(user: CreateUserInput!): UserSession!
+  uploadFile(file: Upload!): String!
 }
 
 type Query {
+  getUserInfo: User!
   helloWorld: String!
   login(credentials: UserLoginInput!): UserSession!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input user {
+  _id: ID!
+  ctrlNumber: String!
+  email: String!
+  lastName: String!
+  name: String!
+  password: String!
+}
+
+type User {
+  _id: ID!
+  ctrlNumber: String!
+  email: String!
+  lastName: String!
+  name: String!
+  password: String!
 }
 
 input UserLoginInput {

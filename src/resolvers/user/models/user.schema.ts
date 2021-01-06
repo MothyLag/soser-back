@@ -22,12 +22,16 @@ const userSchema = new Schema<IUserDocument>(
       type: String,
       required: true,
       minlength: 4,
-      maxlength:4
+      maxlength: 4,
     },
     email: {
       type: String,
       unique: true,
       required: false,
+    },
+    picture: {
+      required: false,
+      type: String,
     },
   },
   options

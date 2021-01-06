@@ -1,7 +1,18 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLUpload } from 'apollo-server';
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from 'type-graphql';
+import { getUserId } from '../../middlewares/session.middleware';
 import { CreateUserInput } from './inputs/createUser.input';
 import { UserLoginInput } from './inputs/loginUser.input';
+import { IUploadFile } from './models/user.interface';
 import { UserService } from './user.service';
+import { User } from './user.type';
 import { UserSession } from './userSession.type';
 
 @Resolver()
@@ -20,5 +31,19 @@ export class UserResolver {
   @Query(() => UserSession)
   public login(@Arg('credentials') credentials: UserLoginInput) {
     return this.userService.loginUser(credentials);
+  }
+  @UseMiddleware(getUserId)
+  @Query(() => User)
+  public async getUserInfo(@Ctx() ctx: any) {}
+
+  @Mutation(() => String)
+  @UseMiddleware(getUserId)
+  uploadFile(
+    @Ctx() ctx: any,
+    @Arg('file', () => GraphQLUpload)
+    file: IUploadFile
+  ) {
+    const userId: string = ctx.res.locals.userId;
+    return this.userService.uploadPicture(file, userId);
   }
 }

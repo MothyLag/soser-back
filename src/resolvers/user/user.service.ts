@@ -2,12 +2,17 @@ import { Service } from 'typedi';
 import { from } from 'rxjs';
 import { userModel } from './models/user.schema';
 import { concatMap, map } from 'rxjs/operators';
+import { createWriteStream } from 'fs';
 import {
   ICreateUserInput,
   ICredentials,
+  IUploadFile,
   IUserSession,
+  SavedFile,
 } from './models/user.interface';
 import { sign } from 'jsonwebtoken';
+import * as fs from 'fs';
+import * as path from 'path';
 @Service()
 export class UserService {
   public helloWorld() {
@@ -66,5 +71,45 @@ export class UserService {
         })
       )
       .toPromise();
+  }
+  public async getUserInfo(userId: string) {
+    return await userModel.findById(userId).exec();
+  }
+
+  private _uploadFile(
+    { createReadStream, filename }: IUploadFile,
+    idUser: string
+  ): Promise<SavedFile | false> {
+    const patch = path.normalize(
+      __dirname + `/../../../public/files/${idUser}`
+    );
+    if (!fs.existsSync(patch)) fs.mkdirSync(patch);
+    const extention = path.extname(filename);
+    const filePath = path.normalize(`${patch}/picture${extention}`);
+    console.log(filePath);
+    return new Promise(async (resolve, reject) =>
+      createReadStream().pipe(
+        createWriteStream(filePath)
+          .on('finish', () => {
+            resolve({
+              filename,
+              filePath,
+            });
+          })
+          .on('error', (e) => {
+            console.log(e);
+            reject(false);
+          })
+      )
+    );
+  }
+
+  public async uploadPicture(file: IUploadFile, idUser: string) {
+    const fileSaved = await this._uploadFile(file, idUser);
+    if (fileSaved !== false)
+      return await userModel
+        .findOneAndUpdate({ _id: idUser }, { picture: fileSaved.filePath })
+        .exec();
+    else throw new Error('Ocurrió un error mientras se subia el archivo');
   }
 }

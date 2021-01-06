@@ -8,6 +8,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.10.2",
     "apollo-server": "^2.19.0",
+    "apollo-upload-server": "^7.1.0",
     "aws-sdk": "^2.809.0",
     "class-validator": "^0.12.2",
     "graphql": "^15.4.0",
@@ -25,5 +26,8 @@
     "build": "tsc -p ./",
     "dev": "nodemon ./src/main.ts --exec ts-node",
     "start": "node ./build/main.js"
+  },
+  "resolutions": {
+    "fs-capacitor": "5.0.0"
   }
 }
