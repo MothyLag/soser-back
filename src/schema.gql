@@ -54,6 +54,7 @@ type Mutation {
   createData(newData: CreateDataInput!): Data!
   createUser(user: CreateUserInput!): UserSession!
   uploadFile(file: Upload!): String!
+  uploadReport(file: Upload!): String!
 }
 
 type Query {

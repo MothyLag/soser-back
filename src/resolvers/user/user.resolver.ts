@@ -1,4 +1,4 @@
-import { GraphQLUpload } from 'apollo-server';
+import { GraphQLUpload } from 'graphql-upload';
 import {
   Arg,
   Ctx,
@@ -38,7 +38,18 @@ export class UserResolver {
 
   @Mutation(() => String)
   @UseMiddleware(getUserId)
-  uploadFile(
+  async uploadFile(
+    @Ctx() ctx: any,
+    @Arg('file', () => GraphQLUpload)
+    file: IUploadFile
+  ) {
+    const userId: string = ctx.res.locals.userId;
+    return this.userService.uploadPicture(file, userId);
+  }
+
+  @Mutation(() => String)
+  @UseMiddleware(getUserId)
+  async uploadReport(
     @Ctx() ctx: any,
     @Arg('file', () => GraphQLUpload)
     file: IUploadFile

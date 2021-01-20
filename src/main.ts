@@ -4,6 +4,8 @@ import { buildSchema } from 'type-graphql';
 import { Container } from 'typedi';
 import * as path from 'path';
 import { DataBase } from './database/main.db';
+import { authDrive } from './drive/configuration';
+import { google } from 'googleapis';
 
 async function bootstrap() {
   const db = new DataBase();
@@ -34,8 +36,30 @@ async function bootstrap() {
       }
     },
   });
+  function listFiles(auth) {
+    const drive = google.drive({ version: 'v3', auth });
+    drive.files.list(
+      {
+        pageSize: 10,
+        fields: 'nextPageToken, files(id, name)',
+      },
+      (err, res) => {
+        if (err) return console.log('The API returned an error: ' + err);
+        const files = res.data.files;
+        if (files.length) {
+          console.log('Files:');
+          files.map((file) => {
+            console.log(`${file.name} (${file.id})`);
+          });
+        } else {
+          console.log('No files found.');
+        }
+      }
+    );
+  }
   const PORT = process.env.PORT || 4000;
   const { url } = await server.listen(PORT);
+  authDrive();
   console.log(`running on ${url}`);
 }
 bootstrap();

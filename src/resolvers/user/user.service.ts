@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { from } from 'rxjs';
 import { userModel } from './models/user.schema';
+import { createWriteStream } from 'fs';
 import { concatMap, map } from 'rxjs/operators';
 import {
   ICreateUserInput,
@@ -84,16 +85,22 @@ export class UserService {
     );
     if (!fs.existsSync(patch)) fs.mkdirSync(patch);
     const extention = path.extname(filename);
-    const filePath = path.normalize(`${patch}/picture${extention}`);
+    const filePath = path.normalize(`${patch}/${filename}`);
     return new Promise(async (resolve, reject) => {
-      try {
-        await createReadStream().pipe(fs.createWriteStream(filePath));
-        resolve({ filePath, filename });
-      } catch (e) {
-        console.log(e);
-        reject(false);
-      }
+      createReadStream().pipe(
+        createWriteStream(filePath)
+          .on('finish', () => resolve({ filePath, filename }))
+          .on('error', (e) => {
+            console.log(e);
+            reject(false);
+          })
+      );
     });
+  }
+
+  private _base64_encode(file) {
+    const bitmap = fs.readFileSync(file, 'base64');
+    return bitmap;
   }
 
   public async uploadPicture(file: IUploadFile, idUser: string) {
@@ -109,6 +116,6 @@ export class UserService {
   }
   public async getUserPicture(idUser: string) {
     const user = await userModel.findById(idUser).exec();
-    return user.picture ? user.picture : "nopicture";
+    return user.picture ? this._base64_encode(user.picture) : 'nopicture';
   }
 }
