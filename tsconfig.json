@@ -8,7 +8,8 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "watch": false,
-    "outDir": "build"
+    "outDir": "build",
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
