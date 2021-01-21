@@ -30,7 +30,7 @@ export class UserService {
 
   private _userEmailExist(email: string) {
     return from(userModel.find({ email }).exec()).pipe(
-      map((users) => users.length > 0 && users != null)
+      map((users) => (users as IUserDocument[]).length > 0 && users != null)
     );
   }
 
