@@ -13,6 +13,8 @@ import {
 import { sign } from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { authDrive } from '../../drive/configuration';
+import { uploadFile } from '../../drive/methods';
 @Service()
 export class UserService {
   public helloWorld() {
@@ -114,6 +116,12 @@ export class UserService {
       return fileSaved.filePath;
     } else throw new Error('Ocurrió un error mientras se subia el archivo');
   }
+
+  public async uploadReport(file: IUploadFile, idUser: string) {
+    authDrive(uploadFile(file));
+    return idUser;
+  }
+
   public async getUserPicture(idUser: string) {
     const user = await userModel.findById(idUser).exec();
     return user.picture ? this._base64_encode(user.picture) : 'nopicture';

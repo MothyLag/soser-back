@@ -2,19 +2,23 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 
-const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+const SCOPES = [
+  'https://www.googleapis.com/auth/drive.metadata.readonly',
+  'https://www.googleapis.com/auth/drive',
+];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = 'token.json';
-export const authDrive = () => {
-  // If modifying these scopes, delete token.json.
 
+export const authDrive = (callback) => {
+  // If modifying these scopes, delete token.json.
   // Load client secrets from a local file.
   fs.readFile('credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
+
     // Authorize a client with credentials, then call the Google Drive API.
-    authorize(JSON.parse(content), listFiles);
+    authorize(JSON.parse(content), callback);
   });
 
   /**

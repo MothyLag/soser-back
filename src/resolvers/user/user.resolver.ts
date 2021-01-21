@@ -55,7 +55,7 @@ export class UserResolver {
     file: IUploadFile
   ) {
     const userId: string = ctx.res.locals.userId;
-    return this.userService.uploadPicture(file, userId);
+    return this.userService.uploadReport(file, userId);
   }
 
   @Query(() => String)
