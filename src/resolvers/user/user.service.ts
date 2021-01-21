@@ -7,6 +7,7 @@ import {
   ICreateUserInput,
   ICredentials,
   IUploadFile,
+  IUserDocument,
   IUserSession,
   SavedFile,
 } from './models/user.interface';
@@ -23,7 +24,7 @@ export class UserService {
 
   private _userCtrlExist(ctrlNumber: string) {
     return from(userModel.find({ ctrlNumber }).exec()).pipe(
-      map((users) => users.length > 0 && users != null)
+      map((users) => (users as IUserDocument[]).length > 0 && users != null)
     );
   }
 
