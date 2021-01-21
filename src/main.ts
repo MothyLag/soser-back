@@ -23,7 +23,7 @@ async function bootstrap() {
       path: '/subscriptions',
     },
     context: (ctx) => {
-      const { _, connection } = ctx;
+      const { req, connection } = ctx;
       if (connection) {
         return {
           req: { headers: { authorization: connection.context.Authorization } },
